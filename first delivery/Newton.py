@@ -1,28 +1,31 @@
-from numpy import absolute
+import sympy as sp
+import numpy as np
+import pandas as pd
 
-# Metodo de newton
+x=sp.symbols('x')
 
-# input: f(x), f´(x), x0, niter, tol
+def funcion(ecua):
+    global x
+    return sp.sympify(ecua)
 
-def fx(x):
-    y = pow(x,2)-3
-    return y
-def f2x(x):
-    y = 2*x
-    return y
-
-x0 = float(input("x0: "))
-nite = int(input("numero de iteraciones: "))
-tol = float(input("tolerancia: "))
-
-cont = 0
-error = tol+1
-while(cont>nite and error>tol):
-    xn = x0 - (fx(x0)/f2x(x0))
-    error = abs(xn-x0)
-    ++cont
-    x0=xn
-if(error<=tol):
-    print(xn, "es una raiz con toleracia = ",tol)
-else:
-    print("el metodo no converge")
+def NewtonRhapson(ecuacion,x_0,es,maxIte):
+    global x
+    ecuacion=funcion(ecuacion)
+    derivada=sp.diff(ecuacion)
+    f_NR=x-(ecuacion/derivada)#formula de Newton Rhapson
+    ea=100 #error aproximado 100%
+    x_r=x_0 #x_i+1
+    interaciones=0
+    print("\nIteracion\t Xi\t\t\tError aproximado")
+    print("-------------------------------------------------------------------------------")
+    while ea>es:
+        x_anterior=x_r# x_anterior = x_i
+        x_r=f_NR.evalf(subs={x:x_anterior})
+        if x_r !=0:
+            ea=abs((x_r-x_anterior)/x_r)*100
+        interaciones=interaciones+1
+        print(interaciones,"\t\t",x_r,"\t",ea)
+        if interaciones>=maxIte:
+            print("\nEl metodo no converge\n")
+            break
+    return x_r
